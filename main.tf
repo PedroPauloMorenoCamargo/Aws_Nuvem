@@ -15,26 +15,25 @@ provider "aws" {
   region = "us-east-1"
 }
 
+#VPC
 module "vpc" {
   source = "./modules/vpc" # Update this to the path of your module
 }
 
-output "vpc_id" {
-  value = module.vpc.vpc_id
+
+#EC2
+module "ec2" {
+  source = "./modules/ec2"
+  #Variáveis
+  private_subnets_ids = module.vpc.private_subnet_ids
+  ec2_sg_id = module.sg.ec2_sg_id
 }
 
-output "public_subnet_ids" {
-  value = module.vpc.public_subnet_ids
+
+#SG
+module "sg" {
+  source = "./modules/sg" 
+  #Variáveis
+  vpc_id = module.vpc.vpc_id
 }
 
-output "private_subnet_ids" {
-  value = module.vpc.private_subnet_ids
-}
-
-output "internet_gateway_id" {
-  value = module.vpc.internet_gateway_id
-}
-
-output "route_table_id" {
-  value = module.vpc.route_table_id
-}
