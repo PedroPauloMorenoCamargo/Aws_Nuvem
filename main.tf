@@ -30,8 +30,9 @@ module "sg" {
 module "ec2" {
   source = "./modules/ec2"
   ec2_sg_id = module.sg.ec2_sg_id
-  private_sub1_id = module.vpc.private_subnet1_id
-  private_sub2_id = module.vpc.private_subnet2_id
+  private_sub1_id = module.vpc.public_subnet1_id
+  private_sub2_id = module.vpc.public_subnet2_id
   target_group_arn = module.vpc.target_group_arn
 }
+
 

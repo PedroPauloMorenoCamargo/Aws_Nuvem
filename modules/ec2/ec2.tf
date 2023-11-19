@@ -21,20 +21,15 @@ resource "local_file" "key" {
 
 # ASG with Launch template
 resource "aws_launch_template" "ec2_launch_templ" {
-  name_prefix   = "Pedro_ec2_launch_templ"
-  image_id      = "ami-00c39f71452c08778" # To note: AMI is specific for each region
+  name_prefix   = "pedro_ec2_launch_templ"
+  image_id      = "ami-0fc5d935ebf8bc3bc" # To note: AMI is specific for each region
   instance_type = "t2.micro"
   key_name      = aws_key_pair.generated_key.key_name
-   user_data = base64encode(<<-EOF
+  user_data = base64encode(<<-EOF
               #!/bin/bash
-              yum update -y
-              yum install httpd -y
-              echo "<h1>Hello, World! $(hostname -f)</h1>" > /var/www/html/index.html
-              systemctl enable httpd
-              systemctl start httpd
+              git clone https://github.com/PedroPauloMorenoCamargo/API.git
               EOF
-    )
-
+  )
   vpc_security_group_ids = [var.ec2_sg_id]
 
   tag_specifications {
@@ -47,8 +42,8 @@ resource "aws_launch_template" "ec2_launch_templ" {
 
 
 resource "aws_autoscaling_group" "Pedro_Scaling_Group" {
-  desired_capacity     = 2
-  max_size             = 6
+  desired_capacity     = 1
+  max_size             = 1
   min_size             = 1
   vpc_zone_identifier  = [var.private_sub1_id, var.private_sub2_id]  # Assuming these are your private subnets
 

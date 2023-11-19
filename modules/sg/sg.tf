@@ -7,7 +7,16 @@ resource "aws_security_group" "sg_alb" {
     protocol         = "tcp"
     from_port        = 80
     to_port          = 80
-    cidr_blocks      = ["0.0.0.0/0"]
+    cidr_blocks      = ["191.23.71.16/32"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  ingress {
+    description      = "Allow http request from anywhere"
+    protocol         = "tcp"
+    from_port        = 22
+    to_port          = 22
+    cidr_blocks      = ["191.23.71.16/32"]
     ipv6_cidr_blocks = ["::/0"]
   }
   
@@ -39,6 +48,14 @@ resource "aws_security_group" "sg_ec2" {
     from_port       = 80 # range of
     to_port         = 80 # port numbers
     security_groups = [aws_security_group.sg_alb.id]
+  }
+
+  ingress {
+    description     = "Allow ssh request from Load Balancer"
+    protocol        = "tcp"
+    from_port       = 22 # range of
+    to_port         = 22 # port numbers
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
