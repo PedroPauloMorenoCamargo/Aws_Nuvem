@@ -47,8 +47,8 @@ resource "aws_launch_template" "ec2_launch_templ" {
 
 
 resource "aws_autoscaling_group" "Pedro_Scaling_Group" {
-  desired_capacity     = 1
-  max_size             = 1
+  desired_capacity     = 2
+  max_size             = 6
   min_size             = 1
   vpc_zone_identifier  = [var.private_sub1_id, var.private_sub2_id]  # Assuming these are your private subnets
 
@@ -59,4 +59,57 @@ resource "aws_autoscaling_group" "Pedro_Scaling_Group" {
     version = "$Latest"  # Use specific version or $Latest for the latest version of the template
   }
 
+}
+
+# CloudWatch metric alarm for high CPU utilization
+resource "aws_cloudwatch_metric_alarm" "high_cpu_alarm" {
+  alarm_name          = "Pedro_HighCPUUtilization"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = 2
+  metric_name         = "CPUUtilization"
+  namespace           = "AWS/EC2"
+  period              = 300
+  statistic           = "Average"
+  threshold           = 70
+
+  dimensions = {
+    AutoScalingGroupName = aws_autoscaling_group.Pedro_Scaling_Group.name
+  }
+
+  alarm_description = "This alarm monitors high CPU utilization"
+  alarm_actions     = [aws_autoscaling_policy.scale_up_policy.arn]
+
+  tags = {
+    Name = "HighCPUUtilization"
+  }
+}
+
+resource "aws_autoscaling_policy" "scale_up_policy" {
+  name                   = "Pedro-scale-up"
+  scaling_adjustment     = 1
+  adjustment_type        = "ChangeInCapacity"
+  cooldown               = 300
+  autoscaling_group_name = aws_autoscaling_group.Pedro_Scaling_Group.name
+}
+resource "aws_cloudwatch_metric_alarm" "low_cpu_alarm" {
+  alarm_name          = "Pedro_LowCPUAlarm"
+  comparison_operator = "LessThanThreshold"
+  evaluation_periods  = 2
+  metric_name         = "CPUUtilization"
+  namespace           = "AWS/EC2"
+  period              = 300
+  statistic           = "Average"
+  threshold           = 20  # Adjust this threshold based on your requirements
+
+  dimensions = {
+    AutoScalingGroupName = aws_autoscaling_group.Pedro_Scaling_Group.name
+  }
+}
+
+resource "aws_autoscaling_policy" "scale_down_policy" {
+  name                   = "Pedro-scale-down"
+  scaling_adjustment     = -1
+  adjustment_type        = "ChangeInCapacity"
+  cooldown               = 300
+  autoscaling_group_name = aws_autoscaling_group.Pedro_Scaling_Group.name
 }

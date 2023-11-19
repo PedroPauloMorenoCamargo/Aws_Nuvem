@@ -48,3 +48,23 @@ resource "aws_security_group" "sg_ec2" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
+resource "aws_security_group" "sg_db" {
+  name        = "PedroSQLAccessSG"
+  description = "Allows inbound traffic on port 3306 from EC2 security group"
+  vpc_id      = var.vpc_id 
+
+  ingress {
+    from_port   = 3306
+    to_port     = 3306
+    protocol    = "tcp"
+    security_groups = [aws_security_group.sg_ec2.id]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
