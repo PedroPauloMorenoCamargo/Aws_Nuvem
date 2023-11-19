@@ -35,3 +35,11 @@ module "ec2" {
   target_group_arn = module.vpc.target_group_arn
 }
 
+module "db" {
+  source = "./modules/db"
+  ec2_sg_id = module.sg.ec2_sg_id
+  private_sub1_id = module.vpc.private_subnet1_id
+  private_sub2_id = module.vpc.private_subnet2_id
+  db_sg_id = module.sg.db_sg_id
+}
+

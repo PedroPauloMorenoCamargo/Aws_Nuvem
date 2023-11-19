@@ -5,8 +5,8 @@ resource "aws_db_instance" "mydb" {
   engine               = "mysql"
   engine_version       = "8.0"
   instance_class       = "db.t2.micro"
-  username             = "root"
-  password             = "penis12345678"
+  username             = "admin"
+  password             = "coxinha1234569"
   parameter_group_name = "default.mysql8.0"
 
   db_subnet_group_name    = aws_db_subnet_group.my_db_subnet_group.name
