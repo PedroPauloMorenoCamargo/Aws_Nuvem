@@ -10,15 +10,6 @@ resource "aws_security_group" "sg_alb" {
     cidr_blocks      = ["0.0.0.0/0"]
     ipv6_cidr_blocks = ["::/0"]
   }
-
-  ingress {
-    description      = "Allow http request from anywhere"
-    protocol         = "tcp"
-    from_port        = 22
-    to_port          = 22
-    cidr_blocks      = ["191.23.71.16/32"]
-    ipv6_cidr_blocks = ["::/0"]
-  }
   
   ingress {
     description      = "Allow https request from anywhere"
@@ -42,12 +33,13 @@ resource "aws_security_group" "sg_ec2" {
   name   = "Pedro_sg_ec2"
   vpc_id = var.vpc_id
 
+  // Allow incoming traffic on port 8000 from the Load Balancer's security group
   ingress {
-    description     = "Allow http request from Load Balancer"
+    description     = "Allow incoming traffic from Load Balancer"
+    from_port       = 80
+    to_port         = 80
     protocol        = "tcp"
-    from_port       = 80 # range of
-    to_port         = 80 # port numbers
-    security_groups = [aws_security_group.sg_alb.id]
+    security_groups = [aws_security_group.sg_alb.id]  # Replace with your Load Balancer's security group ID
   }
 
   ingress {
@@ -64,6 +56,7 @@ resource "aws_security_group" "sg_ec2" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
 }
 
 resource "aws_security_group" "sg_db" {

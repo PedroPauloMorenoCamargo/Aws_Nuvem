@@ -47,13 +47,12 @@ resource "aws_launch_template" "ec2_launch_templ" {
               export USER=root
               export KEY=penis12345678
 
-              echo "HOST=${var.endpoint}" > base_dns.txt
 
               sudo touch /etc/authbind/byport/80
               sudo chmod 500 /etc/authbind/byport/80
               sudo chown ubuntu /etc/authbind/byport/80
 
-
+              starting the app
               authbind --deep uvicorn app.main:app --host 0.0.0.0 --port 80
               EOF
   )
