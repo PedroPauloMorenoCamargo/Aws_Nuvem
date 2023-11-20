@@ -1,0 +1,6 @@
+Pedro_Par_Chave.pem
+terraform.tfstate.backup
+terraform.tfstate
+/.terraform
+.terraform.lock.hcl
+.terraform.tfstate.lock.info

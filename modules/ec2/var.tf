@@ -18,5 +18,8 @@ variable "target_group_arn" {
   type        = string
 }
 
-
+variable "endpoint" {
+  description = "DB endpoint"
+  type        = string
+}
 

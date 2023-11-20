@@ -33,6 +33,15 @@ module "ec2" {
   private_sub1_id = module.vpc.public_subnet1_id
   private_sub2_id = module.vpc.public_subnet2_id
   target_group_arn = module.vpc.target_group_arn
+  endpoint = module.db.endpoint
 }
+
+module "db" {
+  source = "./modules/db"
+  db_sg_id = module.sg.db_sg_id
+  private_sub1_id = module.vpc.public_subnet1_id
+  private_sub2_id = module.vpc.public_subnet2_id
+}
+
 
 

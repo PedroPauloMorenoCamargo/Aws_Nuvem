@@ -27,7 +27,34 @@ resource "aws_launch_template" "ec2_launch_templ" {
   key_name      = aws_key_pair.generated_key.key_name
   user_data = base64encode(<<-EOF
               #!/bin/bash
-              git clone https://github.com/PedroPauloMorenoCamargo/API.git
+              
+              sudo apt-get update
+              sudo apt-get install -y python3-pip python3-venv git authbind awscli
+
+              
+              git clone https://github.com/PedroPauloMorenoCamargo/API.git /home/ubuntu/API
+              cd /home/ubuntu/API
+
+              
+              sudo chown -R ubuntu:ubuntu ~/API
+              python3 -m venv env
+              source env/bin/activate
+              sudo chown -R ubuntu /home/ubuntu/API/env
+              pip install -r requirements.txt
+
+              
+              export HOST=${var.endpoint}
+              export USER=root
+              export KEY=penis12345678
+
+              echo "HOST=${var.endpoint}" > base_dns.txt
+
+              sudo touch /etc/authbind/byport/80
+              sudo chmod 500 /etc/authbind/byport/80
+              sudo chown ubuntu /etc/authbind/byport/80
+
+
+              authbind --deep uvicorn app.main:app --host 0.0.0.0 --port 80
               EOF
   )
   vpc_security_group_ids = [var.ec2_sg_id]
@@ -42,8 +69,8 @@ resource "aws_launch_template" "ec2_launch_templ" {
 
 
 resource "aws_autoscaling_group" "Pedro_Scaling_Group" {
-  desired_capacity     = 1
-  max_size             = 1
+  desired_capacity     = 3
+  max_size             = 6
   min_size             = 1
   vpc_zone_identifier  = [var.private_sub1_id, var.private_sub2_id]  # Assuming these are your private subnets
 

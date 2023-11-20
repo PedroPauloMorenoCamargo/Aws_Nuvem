@@ -7,7 +7,7 @@ resource "aws_security_group" "sg_alb" {
     protocol         = "tcp"
     from_port        = 80
     to_port          = 80
-    cidr_blocks      = ["191.23.71.16/32"]
+    cidr_blocks      = ["0.0.0.0/0"]
     ipv6_cidr_blocks = ["::/0"]
   }
 
