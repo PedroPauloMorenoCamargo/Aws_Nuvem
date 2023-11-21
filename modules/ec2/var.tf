@@ -23,3 +23,8 @@ variable "endpoint" {
   type        = string
 }
 
+variable "alb_id" {
+  description = "ALB Name"
+  type        = string
+}
+

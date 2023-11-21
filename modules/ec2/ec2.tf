@@ -68,12 +68,14 @@ resource "aws_launch_template" "ec2_launch_templ" {
 
 
 resource "aws_autoscaling_group" "Pedro_Scaling_Group" {
-  desired_capacity     = 3
-  max_size             = 6
-  min_size             = 1
+  desired_capacity     = 5
+  max_size             = 15
+  min_size             = 3
   vpc_zone_identifier  = [var.private_sub1_id, var.private_sub2_id]  # Assuming these are your private subnets
-
-   # Connect to the target group
+  health_check_type = "EC2"
+  health_check_grace_period = 300
+  force_delete = true
+  # Connect to the target group
   target_group_arns = [var.target_group_arn]
   launch_template {
     id = aws_launch_template.ec2_launch_templ.id
@@ -121,7 +123,7 @@ resource "aws_cloudwatch_metric_alarm" "low_cpu_alarm" {
   period              = 300
   statistic           = "Average"
   threshold           = 20  # Adjust this threshold based on your requirements
-
+  alarm_actions             = [aws_autoscaling_policy.scale_down_policy.arn]
   dimensions = {
     AutoScalingGroupName = aws_autoscaling_group.Pedro_Scaling_Group.name
   }
@@ -133,4 +135,23 @@ resource "aws_autoscaling_policy" "scale_down_policy" {
   adjustment_type        = "ChangeInCapacity"
   cooldown               = 300
   autoscaling_group_name = aws_autoscaling_group.Pedro_Scaling_Group.name
+}
+
+
+resource "aws_autoscaling_policy" "scale_up_down_tracking" {
+  policy_type = "TargetTrackingScaling"
+  name = "scale-up-down-request-count"
+  autoscaling_group_name = aws_autoscaling_group.Pedro_Scaling_Group.name
+  target_tracking_configuration {
+    predefined_metric_specification {
+      predefined_metric_type = "ALBRequestCountPerTarget"
+      resource_label = "${split("/", var.alb_id)[1]}/${split("/", var.alb_id)[2]}/${split("/", var.alb_id)[3]}/targetgroup/${split("/", var.target_group_arn )[1]}/${split("/", var.target_group_arn )[2]}"
+    }
+    target_value = 250
+    
+  }
+
+  lifecycle {
+    create_before_destroy = true 
+  }
 }
