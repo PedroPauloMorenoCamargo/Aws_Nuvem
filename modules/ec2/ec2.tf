@@ -25,6 +25,11 @@ resource "aws_launch_template" "ec2_launch_templ" {
   image_id      = "ami-0fc5d935ebf8bc3bc" # To note: AMI is specific for each region
   instance_type = "t2.micro"
   key_name      = aws_key_pair.generated_key.key_name
+
+  iam_instance_profile {
+    name = var.iam_profile_name
+  }
+
   user_data = base64encode(<<-EOF
               #!/bin/bash
               
@@ -46,6 +51,8 @@ resource "aws_launch_template" "ec2_launch_templ" {
               export HOST=${var.endpoint}
               export USER=root
               export KEY=penis12345678
+              INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
+              export INSTANCE=$INSTANCE_ID
 
 
               sudo touch /etc/authbind/byport/80

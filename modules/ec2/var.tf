@@ -28,3 +28,7 @@ variable "alb_id" {
   type        = string
 }
 
+variable "iam_profile_name" {
+  description = "Profile Name"
+  type        = string
+}
