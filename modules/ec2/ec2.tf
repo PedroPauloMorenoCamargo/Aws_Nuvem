@@ -75,9 +75,9 @@ resource "aws_launch_template" "ec2_launch_templ" {
 
 
 resource "aws_autoscaling_group" "Pedro_Scaling_Group" {
-  desired_capacity     = 5
-  max_size             = 15
-  min_size             = 3
+  desired_capacity     = 4
+  max_size             = 8
+  min_size             = 2
   vpc_zone_identifier  = [var.private_sub1_id, var.private_sub2_id]  # Assuming these are your private subnets
   health_check_type = "EC2"
   health_check_grace_period = 300
