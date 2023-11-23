@@ -15,6 +15,18 @@ variable "azs" {
   default     = ["us-east-1a", "us-east-1b"]
 }
 
+variable "cidr_vpc" {
+  type        = string
+  description = "Availability Zones"
+  default     = "10.0.0.0/16"
+}
+
+variable "cidr_all_blocks" {
+  type        = string
+  description = "Availability Zones"
+  default     = "0.0.0.0/0"
+}
+
 variable "alb_sg_id"{
   type        = string
   description = "Load Balancer SG ID"
