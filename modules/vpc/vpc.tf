@@ -1,6 +1,6 @@
 # VPC
 resource "aws_vpc" "vpc_main" {
-  cidr_block = "10.0.0.0/16"
+  cidr_block = var.cidr_vpc
   tags = {
     Name = "Pedro-vpc"
   }
@@ -11,7 +11,7 @@ resource "aws_subnet" "public_subnet_1" {
   vpc_id                  = aws_vpc.vpc_main.id
   cidr_block              = element(var.public_subnet_cidrs,0)
   map_public_ip_on_launch = true
-  availability_zone       = "us-east-1a"
+  availability_zone       = element(var.azs,0)
   tags = {
     Name = "Pedro_public_subnet_1"
   }
@@ -21,7 +21,7 @@ resource "aws_subnet" "public_subnet_1a" {
   vpc_id                  = aws_vpc.vpc_main.id
   cidr_block              = element(var.public_subnet_cidrs,1)
   map_public_ip_on_launch = true 
-  availability_zone       = "us-east-1b"
+  availability_zone       = element(var.azs,1)
   tags = {
     Name = "Pedro_public_subnet_2"
   }
@@ -31,7 +31,7 @@ resource "aws_subnet" "private_subnet_2" {
   vpc_id                  = aws_vpc.vpc_main.id
   cidr_block              = element(var.private_subnet_cidrs,0)
   map_public_ip_on_launch = false
-  availability_zone       = "us-east-1a"
+  availability_zone       = element(var.azs,0)
   tags = {
     Name = "Pedro_private_subnet_1"
   }
@@ -42,7 +42,7 @@ resource "aws_subnet" "private_subnet_2a" {
   vpc_id                  = aws_vpc.vpc_main.id
   cidr_block              = element(var.private_subnet_cidrs,1)
   map_public_ip_on_launch = false  
-  availability_zone       = "us-east-1b"
+  availability_zone       = element(var.azs,1)
   tags = {
     Name = "Pedro_private_subnet_2"
   }
@@ -62,7 +62,7 @@ resource "aws_route_table" "rt_public" {
   vpc_id = aws_vpc.vpc_main.id
 
   route {
-    cidr_block = "0.0.0.0/0"
+    cidr_block = var.cidr_all_blocks
     gateway_id = aws_internet_gateway.gw.id
   }
 
@@ -135,7 +135,7 @@ resource "aws_route_table" "private_rt_1" {
   vpc_id = aws_vpc.vpc_main.id
 
   route {
-    cidr_block     = "0.0.0.0/0"
+    cidr_block     = var.cidr_all_blocks
     nat_gateway_id = aws_nat_gateway.nat_gw_1.id
   }
   tags = {
@@ -149,7 +149,7 @@ resource "aws_route_table" "private_rt_2" {
   vpc_id = aws_vpc.vpc_main.id
 
   route {
-    cidr_block     = "0.0.0.0/0"
+    cidr_block     = var.cidr_all_blocks
     nat_gateway_id = aws_nat_gateway.nat_gw_2.id
   }
   tags = {
@@ -206,7 +206,7 @@ resource "aws_lb_target_group" "alb_target_group" {
 
 resource "aws_lb_listener" "front_end" {
   load_balancer_arn = aws_lb.alb.arn
-  port              = "80"
+  port              = 80
   protocol          = "HTTP"
   default_action {
     type             = "forward"

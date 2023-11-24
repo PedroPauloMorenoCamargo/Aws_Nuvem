@@ -17,3 +17,18 @@ variable "target_group_arn" {
   description = "target_group_arn"
   type        = string
 }
+
+variable "endpoint" {
+  description = "DB endpoint"
+  type        = string
+}
+
+variable "alb_id" {
+  description = "ALB Name"
+  type        = string
+}
+
+variable "iam_profile_name" {
+  description = "Profile Name"
+  type        = string
+}

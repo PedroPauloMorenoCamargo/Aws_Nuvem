@@ -6,6 +6,14 @@ terraform {
       version = "~> 4.16"
     }
   }
+  
+  backend "s3"{
+    bucket = "pedropmc-bucket"
+    key = "tf-states/terraform.tfstate"
+    region = "us-east-1"
+    encrypt = true
+
+  }
 
   required_version = ">= 1.2.0"
 }
@@ -33,5 +41,21 @@ module "ec2" {
   private_sub1_id = module.vpc.private_subnet1_id
   private_sub2_id = module.vpc.private_subnet2_id
   target_group_arn = module.vpc.target_group_arn
+  endpoint = module.db.endpoint
+  alb_id = module.vpc.alb_id
+  iam_profile_name = module.iam.iam_profile_name
 }
+
+module "db" {
+  source = "./modules/db"
+  db_sg_id = module.sg.db_sg_id
+  private_sub1_id = module.vpc.private_subnet1_id
+  private_sub2_id = module.vpc.private_subnet2_id
+}
+
+module "iam" {
+  source = "./modules/iam"
+}
+
+
 
