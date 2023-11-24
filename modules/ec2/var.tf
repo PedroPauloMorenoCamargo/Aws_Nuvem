@@ -3,13 +3,13 @@ variable "ec2_sg_id" {
   type        = string
 }
 
-variable "private_sub1_id" {
-  description = "private_sub1_id"
+variable "public_sub1_id" {
+  description = "public_sub1_id"
   type        = string
 }
 
-variable "private_sub2_id" {
-  description = "private_sub2_id"
+variable "public_sub2_id" {
+  description = "public_sub2_id"
   type        = string
 }
 

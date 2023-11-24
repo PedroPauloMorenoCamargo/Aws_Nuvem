@@ -78,7 +78,7 @@ resource "aws_autoscaling_group" "Pedro_Scaling_Group" {
   desired_capacity     = 4
   max_size             = 8
   min_size             = 2
-  vpc_zone_identifier  = [var.private_sub1_id, var.private_sub2_id]  # Assuming these are your private subnets
+  vpc_zone_identifier  = [var.public_sub1_id, var.public_sub2_id]  # Assuming these are your private subnets
   health_check_type = "EC2"
   health_check_grace_period = 300
   force_delete = true
