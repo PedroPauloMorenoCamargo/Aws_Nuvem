@@ -167,6 +167,9 @@
 
 ## Complete Infrastructure
 
+
+![Infrastructure](imgs/image.png)
+
 Below is an overview of the complete network infrastructure:
 
 1. The ALB is deployed in both public subnets, each associated with the **Public Route Table**.  
